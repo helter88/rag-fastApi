@@ -11,7 +11,6 @@ SUPPORTED_CONTENT_TYPES = [
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/epub+zip",
-    "application/msword"
 ]
 
 def get_settings() -> Settings:

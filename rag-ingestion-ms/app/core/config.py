@@ -6,6 +6,11 @@ class Settings(BaseSettings):
     MAX_FILE_SIZE_MB: int = 10
     MAX_FILES_COUNT: int = 5
 
+    CHROMA_HOST: str = "localhost"
+    CHROMA_PORT: int = 8000
+    RAG_COLLECTION_NAME: str = "rag_collection"
+    HUGGINGFACEHUB_API_TOKEN: str
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

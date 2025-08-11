@@ -1,0 +1,25 @@
+[project]
+name = "document-parser-ms"
+version = "0.1.0"
+description = "A microservice to parse uploaded documents and return snippets."
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic-settings",
+    "python-multipart", # Niezbędny do obsługi przesyłania plików w FastAPI
+    "pypdf",            # Do odczytu plików PDF
+    "python-docx",      # Do odczytu plików .docx
+    "EbookLib",         # Do odczytu plików .epub
+    "loguru",           # Zaawansowana i prosta w użyciu biblioteka do logowania
+    "gunicorn"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "httpx" # Asynchroniczny klient HTTP do testowania endpointów FastAPI
+]
+
+[tool.uv.sources]
+pypi = { url = "https://pypi.org/simple" }

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  chromadb:
+    image: chromadb/chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+    environment:
+      - ALLOW_RESET=TRUE # Umożliwia resetowanie bazy przez API, przydatne w dewelopmencie
+
+volumes:
+  chroma-data:
+     driver: local

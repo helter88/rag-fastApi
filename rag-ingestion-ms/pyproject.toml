@@ -7,18 +7,20 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "pydantic-settings",
-    "python-multipart", # Niezbędny do obsługi przesyłania plików w FastAPI
-    "pypdf",            # Do odczytu plików PDF
-    "python-docx",      # Do odczytu plików .docx
-    "EbookLib",         # Do odczytu plików .epub
-    "loguru",           # Zaawansowana i prosta w użyciu biblioteka do logowania
-    "gunicorn"
+    "python-multipart",
+    "loguru",           
+    "gunicorn",
+    "langchain",
+    "langchain-community",
+    "chromadb-client",
+    "unstructured[pdf,docx,epub,txt]",
+    "tiktoken"
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "httpx" # Asynchroniczny klient HTTP do testowania endpointów FastAPI
+    "httpx"
 ]
 
 [tool.uv.sources]

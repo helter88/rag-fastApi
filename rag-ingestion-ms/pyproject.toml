@@ -8,13 +8,15 @@ dependencies = [
     "uvicorn[standard]",
     "pydantic-settings",
     "python-multipart",
-    "loguru",           
+    "loguru",
     "gunicorn",
     "langchain",
     "langchain-community",
     "chromadb-client",
     "unstructured[pdf,docx,epub,txt]",
-    "tiktoken"
+    "tiktoken",
+    "langchain-text-splitters>=0.3.9",
+    "langchain-huggingface>=0.3.1",
 ]
 
 [project.optional-dependencies]

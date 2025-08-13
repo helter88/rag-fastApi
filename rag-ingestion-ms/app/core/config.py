@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     CHROMA_PORT: int = 8000
     RAG_COLLECTION_NAME: str = "rag_collection"
     HUGGINGFACEHUB_API_TOKEN: str
+    HF_EMBEDDING_MODEL: str = "intfloat/multilingual-e5-large"
 
     class Config:
         env_file = ".env"

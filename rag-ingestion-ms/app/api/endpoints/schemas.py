@@ -6,7 +6,8 @@ class DocumentSnippet(BaseModel):
     filename: str
     content_snippet: List[str]
 
-class ParsingResponse(BaseModel):
-    results: List[DocumentSnippet]
-    total_files_processed: int
-    errors: List[str]
+class RAGIngestionResponse(BaseModel):
+    total_chunks_added: int
+    processed_files_count: int
+    files_with_errors: List[str]
+    message: str

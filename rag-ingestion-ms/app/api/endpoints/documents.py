@@ -9,6 +9,26 @@ from app.services import rag_processor
 
 router = APIRouter()
 
+@router.get(
+    "/documents",
+    response_model=schemas.DocumentListResponse,
+    summary="List all ingested documents",
+    description="Retrieves a list of unique filenames of all documents that have been processed and stored in the RAG vector store."
+)
+async def list_ingested_documents():
+    try:
+        document_names = await rag_processor.get_all_document_names()
+        return schemas.DocumentListResponse(
+            count=len(document_names),
+            documents=document_names
+        )
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"An unexpected error occurred while listing documents: {e}")
+        raise HTTPException(status_code=500, detail="An unexpected internal error occurred.")
+
+
 @router.post(
     "/ingest-to-rag",
     response_model=schemas.RAGIngestionResponse,

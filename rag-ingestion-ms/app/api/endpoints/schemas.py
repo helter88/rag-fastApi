@@ -11,3 +11,7 @@ class RAGIngestionResponse(BaseModel):
     processed_files_count: int
     files_with_errors: List[str]
     message: str
+
+class DocumentListResponse(BaseModel):
+    count: int
+    documents: List[str]

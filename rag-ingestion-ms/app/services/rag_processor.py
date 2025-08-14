@@ -10,8 +10,8 @@ from loguru import logger
 from langchain_community.vectorstores import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
-from langchain_community.document_loaders import UnstructuredFileLoader
 from app.core.config import settings
+from app.services.document_loader import load_document
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
 
@@ -102,8 +102,7 @@ async def process_and_store_files(files: List[UploadFile]) -> tuple[int, List[st
             logger.info(f"File processing: {file.filename}")
 
             def process_file_sync():
-                loader = UnstructuredFileLoader(tmp_path)
-                docs = loader.load()
+                docs = load_document(tmp_path)
                 chunks = text_splitter.split_documents(docs)
                 
                 logger.info(f"Metadata inspection of the first fragment from the file '{file.filename}':")

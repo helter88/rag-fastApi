@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+from datetime import datetime
 import os
 import tempfile
 from typing import List
@@ -10,6 +10,7 @@ from loguru import logger
 from langchain_community.vectorstores import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
+from langchain_core.documents import Document
 from app.core.config import settings
 from app.services.document_loader import load_document
 
@@ -49,7 +50,11 @@ async def get_all_document_names() -> List[str]:
                 logger.warning("Index document not yet created. The database is likely empty.")
                 return []
             
-            filenames = metadatas[0].get('filenames', [])
+            filenames_str = metadatas[0].get('filenames', '')
+            if not filenames_str:
+                return []
+            
+            filenames = filenames_str.split(',')
             logger.success(f"Fetched {len(filenames)} document names from the index.")
             return sorted(filenames)
 
@@ -77,11 +82,12 @@ async def _update_document_index(new_filenames: List[str]):
         updated_list = current_filenames_list + truly_new_files
         
         def upsert_index_sync():
-            vector_store.upsert(
-                ids=[DOCUMENT_INDEX_ID],
-                metadatas=[{"filenames": updated_list}],
-                documents=["This is an index document. Do not delete."]
+            serialized_filenames = ",".join(updated_list)
+            index_doc = Document(
+                page_content="This is an index document. Do not delete.",
+                metadata={"filenames": serialized_filenames}
             )
+            vector_store.add_documents(documents=[index_doc], ids=[DOCUMENT_INDEX_ID])
             logger.success(f"Index updated. Added {len(truly_new_files)} new names.")
 
         await run_in_threadpool(upsert_index_sync)
@@ -111,7 +117,7 @@ async def process_and_store_files(files: List[UploadFile]) -> tuple[int, List[st
                 
                 for chunk in chunks:
                     chunk.metadata['original_filename'] = file.filename
-                    chunk.metadata['ingestion_timestamp_utc'] = datetime.now(datetime.timezone.utc).isoformat()
+                    chunk.metadata['ingestion_timestamp_utc'] = datetime.now().isoformat()
                 
                 logger.info(f"File '{file.filename}' devided for {len(chunks)} chunks with metadata.")
                 return chunks
@@ -135,7 +141,13 @@ async def process_and_store_files(files: List[UploadFile]) -> tuple[int, List[st
     
     try:
         logger.info(f"Adding {len(all_chunks)} chunks to the vector database ...")
-        await run_in_threadpool(vector_store.add_documents, documents=all_chunks)
+        batch_size = 10
+        total_added = 0
+        for i in range(0, len(all_chunks), batch_size):
+            batch = all_chunks[i:i + batch_size]
+            logger.info(f"Adding batch {i//batch_size + 1}/{(len(all_chunks) + batch_size - 1)//batch_size} ({len(batch)} chunks)...")
+            await run_in_threadpool(vector_store.add_documents, documents=batch)
+            total_added += len(batch)
         logger.success(f"Added {len(all_chunks)} chunks.")
 
         if processed_filenames:

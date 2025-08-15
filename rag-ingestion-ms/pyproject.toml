@@ -12,10 +12,13 @@ dependencies = [
     "gunicorn",
     "langchain",
     "langchain-community",
+    "pypdf",
+    "unstructured[pdf,docx,epub,txt]",
     "chromadb-client",
     "tiktoken",
     "langchain-text-splitters>=0.3.9",
     "langchain-huggingface>=0.3.1",
+    "pypandoc-binary>=1.15",
 ]
 
 [project.optional-dependencies]

@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Document Parser Microservice"
+    APP_NAME: str = "RAG Document Manager Microservice"
     LOG_LEVEL: str = "INFO"
     MAX_FILE_SIZE_MB: int = 10
     MAX_FILES_COUNT: int = 5

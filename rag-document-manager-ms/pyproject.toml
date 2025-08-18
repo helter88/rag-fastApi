@@ -1,7 +1,7 @@
 [project]
-name = "document-parser-ms"
+name = "rag-document-manager-ms"
 version = "0.1.0"
-description = "A microservice to parse uploaded documents and return snippets."
+description = "A microservice to manage documents."
 requires-python = ">=3.13"
 dependencies = [
     "fastapi",

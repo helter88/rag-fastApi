@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     APP_NAME: str = "Document Parser Microservice"
@@ -12,8 +12,9 @@ class Settings(BaseSettings):
     HUGGINGFACEHUB_API_TOKEN: str
     HF_EMBEDDING_MODEL: str = "intfloat/multilingual-e5-large"
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8"
+    )
 
 settings = Settings()

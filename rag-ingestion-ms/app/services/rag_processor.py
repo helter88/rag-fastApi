@@ -158,3 +158,43 @@ async def process_and_store_files(files: List[UploadFile]) -> tuple[int, List[st
     except Exception as e:
         logger.error(f"Failed to add documents to ChromaDB: {e}")
         raise HTTPException(status_code=500, detail=f"Error writing to the vector database: {e}")
+
+async def delete_document_by_name(filename: str):
+    logger.info(f"Deletion request for document received: {filename}")
+
+    current_filenames = await get_all_document_names()
+    if filename not in current_filenames:
+        logger.warning(f"Document '{filename}' not found in the index. No deletion performed.")
+        raise HTTPException(status_code=404, detail=f"Document '{filename}' not found.")
+
+    try:
+        def delete_chunks_sync():
+            vector_store.delete(where={"original_filename": filename})
+            logger.success(f"Successfully deleted all chunks for document: {filename}")
+        
+        await run_in_threadpool(delete_chunks_sync)
+
+    except Exception as e:
+        logger.error(f"Failed to delete document chunks from ChromaDB for '{filename}': {e}")
+        raise HTTPException(status_code=500, detail=f"Error deleting chunks from vector store: {e}")
+
+    # Krok 3: Zaktualizuj dokument indeksu, aby usunąć nazwę pliku
+    async with index_update_lock:
+        logger.info(f"Lock acquired. Updating index to remove '{filename}'.")
+        updated_list = await get_all_document_names()
+        if filename in updated_list:
+            updated_list.remove(filename)
+
+            def upsert_index_sync():
+                serialized_filenames = ",".join(updated_list)
+                index_doc = Document(
+                    page_content="This is an index document. Do not delete.",
+                    metadata={"filenames": serialized_filenames}
+                )
+
+                vector_store.add_documents(documents=[index_doc], ids=[DOCUMENT_INDEX_ID])
+                logger.success(f"Index updated successfully. Removed '{filename}'.")
+
+            await run_in_threadpool(upsert_index_sync)
+        else:
+            logger.warning(f"'{filename}' was already removed from the index, possibly by a concurrent process.")

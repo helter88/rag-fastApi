@@ -55,3 +55,23 @@ async def ingest_documents_to_rag(
     except Exception as e:
         logger.error(f"Unexpected error during ingestion process : {e}")
         raise HTTPException(status_code=500, detail="An unexpected internal error occurred.")
+    
+@router.delete(
+    "/documents/{filename}",
+    response_model=schemas.DocumentDeleteResponse,
+    summary="Delete a document and its chunks from the RAG store",
+    description="Removes all vector embeddings associated with the specified filename from ChromaDB and updates the document index."
+)
+async def delete_document(filename: str):
+    try:
+        await rag_processor.delete_document_by_name(filename)
+        return schemas.DocumentDeleteResponse(
+            message="Document and all its associated chunks have been successfully deleted.",
+            deleted_filename=filename
+        )
+    except HTTPException as e:
+        # Przekaż wyjątki HTTP (np. 404) dalej
+        raise e
+    except Exception as e:
+        logger.error(f"An unexpected error occurred while deleting document '{filename}': {e}")
+        raise HTTPException(status_code=500, detail="An unexpected internal error occurred.")

@@ -15,3 +15,7 @@ class RAGIngestionResponse(BaseModel):
 class DocumentListResponse(BaseModel):
     count: int
     documents: List[str]
+    
+class DocumentDeleteResponse(BaseModel):
+    message: str
+    deleted_filename: str

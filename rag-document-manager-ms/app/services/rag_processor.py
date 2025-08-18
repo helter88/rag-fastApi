@@ -54,7 +54,7 @@ async def get_all_document_names() -> List[str]:
             if not filenames_str:
                 return []
             
-            filenames = filenames_str.split(',')
+            filenames = filenames_str.split('|')
             logger.success(f"Fetched {len(filenames)} document names from the index.")
             return sorted(filenames)
 
@@ -82,7 +82,7 @@ async def _update_document_index(new_filenames: List[str]):
         updated_list = current_filenames_list + truly_new_files
         
         def upsert_index_sync():
-            serialized_filenames = ",".join(updated_list)
+            serialized_filenames = "|".join(updated_list)
             index_doc = Document(
                 page_content="This is an index document. Do not delete.",
                 metadata={"filenames": serialized_filenames}
@@ -186,7 +186,7 @@ async def delete_document_by_name(filename: str):
             updated_list.remove(filename)
 
             def upsert_index_sync():
-                serialized_filenames = ",".join(updated_list)
+                serialized_filenames = "|".join(updated_list)
                 index_doc = Document(
                     page_content="This is an index document. Do not delete.",
                     metadata={"filenames": serialized_filenames}

@@ -7,7 +7,7 @@ import chromadb
 from fastapi import HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from loguru import logger
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_core.documents import Document

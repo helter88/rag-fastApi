@@ -1,7 +1,7 @@
 [project]
 name = "rag-query-ms"
 version = "0.1.0"
-description = ""A microservice for querying a RAG pipeline."
+description = "A microservice for querying a RAG pipeline."
 requires-python = ">=3.13"
 dependencies = [
     "fastapi",
@@ -13,7 +13,7 @@ dependencies = [
     "langchain-huggingface>=0.3.1",
     "langchain-chroma>=0.2.5",
     "langchain-google-genai",
-    "langgraph"      
+    "langgraph",      
     "loguru",
     "gunicorn"
 ]

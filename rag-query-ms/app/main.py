@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from loguru import logger
 
-from app.api.endpoints import documents
+from app.api.endpoints import query
 from app.core.config import settings
 from app.core.logging_config import setup_logging
 
@@ -22,8 +22,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-
-app.include_router(documents.router, prefix="/api/v1", tags=["Documents"])
+app.include_router(query.router, prefix="/api/v1", tags=["RAG API"])
 
 @app.get("/health", tags=["Health Check"])
 async def health_check():

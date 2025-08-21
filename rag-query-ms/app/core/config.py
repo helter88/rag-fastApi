@@ -11,6 +11,12 @@ class Settings(BaseSettings):
     RAG_COLLECTION_NAME: str = "rag_collection"
     HUGGINGFACEHUB_API_TOKEN: str
     HF_EMBEDDING_MODEL: str = "intfloat/multilingual-e5-large"
+    LLM_MODEL_NAME: str = "gemini-2.5-flash"
+
+    RAG_K_DOCUMENTS: int = 5
+    LLM_TEMPERATURE: float = 0.2
+    SNIPPET_LENGTH: int = 200
+    REQUEST_TIMEOUT: int = 30
 
     GOOGLE_API_KEY: str
 

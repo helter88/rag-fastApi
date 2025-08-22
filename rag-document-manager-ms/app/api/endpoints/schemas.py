@@ -1,7 +1,6 @@
 from typing import List
 from pydantic import BaseModel
 
-
 class DocumentSnippet(BaseModel):
     filename: str
     content_snippet: List[str]

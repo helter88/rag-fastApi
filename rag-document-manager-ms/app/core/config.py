@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     RAG_COLLECTION_NAME: str = "rag_collection"
     HUGGINGFACEHUB_API_TOKEN: str
     HF_EMBEDDING_MODEL: str = "intfloat/multilingual-e5-large"
+    TEXT_SPLITTER_CHUNK_SIZE: int = 1500
+    TEXT_SPLITTER_CHUNK_OVERLAP: int = 200
 
     model_config = SettingsConfigDict(
         env_file=".env",

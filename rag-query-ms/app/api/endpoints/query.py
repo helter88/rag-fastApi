@@ -4,7 +4,7 @@ from loguru import logger
 
 from app.api.endpoints import schemas
 from app.services.rag_service import RAGService
-from app.dependencies import get_rag_service
+from app.core.dependencies import get_rag_service
 
 router = APIRouter()
 
@@ -25,5 +25,5 @@ async def ask_question(request: schemas.QueryRequest, ragService: RAGService = D
     
     return schemas.QueryResponse(
         answer=response_dict.get("answer", "No answer could be generated."),
-        sources=response_dict.get("sources", []) # Poprawiona nazwa klucza na 'sources'
+        sources=response_dict.get("sources", [])
     )

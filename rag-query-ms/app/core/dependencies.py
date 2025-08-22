@@ -1,4 +1,5 @@
 from functools import lru_cache
+from http.client import HTTPException
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_chroma import Chroma
@@ -7,6 +8,7 @@ import chromadb
 from langchain_core.language_models import BaseChatModel
 from langchain_core.embeddings import Embeddings
 from fastapi import Depends
+from loguru import logger
 
 from app.core.config import settings
 from app.services.rag_service import RAGService
@@ -26,7 +28,12 @@ def get_embeddings_model() -> Embeddings:
 @lru_cache(maxsize=None)
 def get_chroma_client() -> chromadb.HttpClient:
     """Provides a singleton instance of the ChromaDB client."""
-    return chromadb.HttpClient(host=get_settings().CHROMA_HOST, port=get_settings().CHROMA_PORT)
+    try:
+        return chromadb.HttpClient(host=get_settings().CHROMA_HOST, port=get_settings().CHROMA_PORT)
+    
+    except Exception as e:
+        logger.error(f"Failed to connect to ChromaDB: {e}")
+        raise HTTPException(status_code=503, detail="Vector database unavailable")
 
 @lru_cache(maxsize=None)
 def get_vector_store() -> Chroma:

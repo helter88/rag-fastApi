@@ -61,7 +61,8 @@ def get_llm() -> BaseChatModel:
         temperature=get_settings().LLM_TEMPERATURE
     )
 
-@lru_cache(maxsize=None)
+_rag_service_instance = None
+
 def get_rag_service(
     retriever: VectorStoreRetriever = Depends(get_retriever),
     llm: BaseChatModel = Depends(get_llm),
@@ -69,4 +70,8 @@ def get_rag_service(
     """
     Provides a singleton instance of the RAGService.
     """
-    return RAGService(retriever=retriever, llm=llm)
+    global _rag_service_instance
+    if _rag_service_instance is None:
+        logger.info("Creating RAGService instance for the first time...")
+        _rag_service_instance = RAGService(retriever=retriever, llm=llm)
+    return _rag_service_instance
